@@ -1,6 +1,6 @@
 -- ia_peeer/init.lua
-assert(minetest.get_modpath('placeable_buckets'))
-assert(ia_bucket ~= nil)
+--assert(ia_util.has_drinks_redo())
+assert(ia_util.has_placeable_buckets_redo())
 
 ia_peeer = {}
 
@@ -241,7 +241,7 @@ local function on_impact(self, pos)
         pos = pos,
         minvel = {x=-1, y=1, z=-1},
         maxvel = {x=1, y=2, z=1},
-        minacc = {x=0, y=-9.81, z=0},
+        minacc = {x=0, y=-9.81, z=0}, -- TODO in space ?
         texture = droplet,
     })
     local wetted = on_impact_primary  (pos)
@@ -279,7 +279,11 @@ minetest.register_entity(modname..":urine_droplet", {
 })
 
 local groups     = {urine=1}
-ia_bucket.register_liquid(modname, pee_color, node_alpha, alpha, 'urine', 'Urine', groups)
+placeable_buckets.register_liquid(modname, pee_color, node_alpha, alpha, 'urine', 'Urine', groups, 'default:water_source', 'default:water_flowing')
+placeable_buckets.register_drink_vessels(modname, pee_color, 'urine', 'Urine', 1, -1,
+    modname..':urine_source', modname..':urine_flowing', modname..':bucket_urine', modname..':bucket_wood_urine')
+    --'default:water_source', 'default:water_flowing')
+-- TODO register all the glasses, glass bottles, heavy steel bottles and such
 --
 --minetest.register_node("ia_peeer:urine_source", {
 --    description = "Urine Source",
