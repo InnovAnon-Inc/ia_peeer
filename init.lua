@@ -279,9 +279,13 @@ minetest.register_entity(modname..":urine_droplet", {
 })
 
 local groups     = {urine=1}
-placeable_buckets.register_liquid(modname, pee_color, node_alpha, alpha, 'urine', 'Urine', groups, 'default:water_source', 'default:water_flowing')
+local bucket_urine      = modname..':bucket_urine'
+local bucket_wood_urine = modname..':bucket_wood_urine'
+--local bucket_urine      = modname..':jbu_urine'
+--local bucket_wood_urine = modname..':jbw_urine'
+placeable_buckets.register_liquid(modname, pee_color, node_alpha, alpha, 'urine', 'Urine', groups, 'default:water_source', 'default:water_flowing', bucket_urine, bucket_wood_urine)
 placeable_buckets.register_drink_vessels(modname, pee_color, 'urine', 'Urine', 1, -1,
-    modname..':urine_source', modname..':urine_flowing', modname..':bucket_urine', modname..':bucket_wood_urine')
+    modname..':urine_source', modname..':urine_flowing', bucket_urine, bucket_wood_urine)
     --'default:water_source', 'default:water_flowing')
 -- TODO register all the glasses, glass bottles, heavy steel bottles and such
 --
