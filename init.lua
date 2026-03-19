@@ -59,6 +59,34 @@ end
 --
 --
 
+function ia_peeer.try_fill_held_glass(player)
+	assert(player ~= nil)
+	--assert(player.get_wield_item ~= nil)
+    local itemstack = player:get_wielded_item() -- FIXME
+    local name = itemstack:get_name()
+
+    -- Check if player is wielding an empty drinking glass
+    if name == "vessels:drinking_glass" then
+        -- Remove one empty glass
+        itemstack:take_item(1)
+        player:set_wielded_item(itemstack)
+
+        local pee_item = modname..":jcu_urine" -- Replace 'modname' with your actual mod prefix
+        local inv = player:get_inventory()
+        
+        if inv:room_for_item("main", pee_item) then
+            inv:add_item("main", pee_item)
+        else
+            -- Drop on ground if inventory is full
+            minetest.add_item(player:get_pos(), pee_item)
+        end
+        
+        return true
+    end
+
+    return false
+end
+
 function ia_peeer.urinate(playername, amount)
     assert(playername ~= nil)
     local player     = minetest.get_player_by_name(playername)
@@ -85,7 +113,8 @@ function ia_peeer.urinate(playername, amount)
     end
 
     ia_peeer.play_zipper_sound(playername)
-    spawn_stream()
+    --spawn_stream()
+    return (ia_peeer.try_fill_held_glass(player) or spawn_stream())
 end
 
 function ia_peeer.spawn_pee_droplet_entity_from_player(playername, freq)
@@ -95,7 +124,8 @@ function ia_peeer.spawn_pee_droplet_entity_from_player(playername, freq)
     assert(pos    ~= nil)
     local look_dir     = player:get_look_dir()
     local eye_height   = player:get_properties().eye_height or 1.5
-    local spawn_pos    = vector.add(pos, {x=0, y=eye_height - 0.5, z=0})
+    --local spawn_pos    = vector.add(pos, {x=0, y=eye_height - 0.5, z=0})
+    local spawn_pos    = vector.add(pos, {x=0, y=eye_height - 0.5 - 0.3, z=0})
     spawn_pos          = vector.add(spawn_pos, vector.multiply(look_dir, 0.2))
     local obj          = ia_peeer.spawn_pee_droplet_entity(spawn_pos, look_dir, freq)
     if not obj then return nil end
